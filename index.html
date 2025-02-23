@@ -7,34 +7,44 @@
         <meta name="author" content="">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
         <!-- TODO: Cargar CSS Bootstrap 5 (no es necesario el JS) -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+         <!-- Cargar Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
     </head>
+    <style>
+      .movie-card {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+      }
 
-    <body>
-
-        <h1 id="autor">Autor: TU NOMBRE AQUÍ</h1>
-
-        <!-- https://vuejs.org/guide/introduction.html -->
-        <div id="app">
-            <!--
-                 TODO: Aplicación Vue 3. Ver archivo ./js/script.js
-               - Mostrar el título de la colección dentro de un componente de Bootstrap 5. 
-                 En su interior habrá un <h1> con id "title" que mostrará el título de la colección.
-               - Para cada item: (https://vuejs.org/guide/essentials/list.html)
-                 - Crear un componente item-data
-            -->
-
-            <!-- TODO: Mostrar el título de la colección dentro de un contenedor de Bootstrap 5 -->
-            
-
-            <!-- TODO: Iterar sobre los items y mostrar cada uno usando el componente item-data -->
-            
-
-        </div>
-
-        <!-- TODO: Cargar librería Vue 3 y archivo js/script.js -->
-        
-
+      .movie-card .card-body {
+          flex-grow: 1;
+      }
+  
+      .movie-card .buttons-container {
+          margin-top: auto;
+      }
+  
+      .edit-form {
+          padding-top: 10px;
+      }
+  </style>
+    <body class="bg-light">
+        <div class="container mt-4">
+          <h1 id="autor" class="text-center fw-bold mb-4">Autor: GÉNESIS CONTRERAS</h1>
+          
+          <div id="app">
+              <div class="text-center mb-4">
+                  <h2 id="title" class="fw-bold">{{ movies.length > 0 ? movies[0].collectionTitle : "Lista de Películas" }}</h2>
+              </div>
+              
+              <movie-list :movies="movies"></movie-list>
+          </div>
+      </div>
+        <!-- Cargar archivo de script.js -->
+        <script src="js/script.js"></script>
     </body>
-
 </html>
