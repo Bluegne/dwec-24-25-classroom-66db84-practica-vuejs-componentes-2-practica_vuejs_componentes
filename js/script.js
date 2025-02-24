@@ -36,63 +36,48 @@ const server_data = {
     }
 };
 
-// TODO transformar los datos para que sean más fáciles de usar en Vue
 const formattedMovies = server_data.collection.items.map(item => {
     let movie = {};
     item.data.forEach(entry => {
-        movie[entry.name] = entry.value; // Guarda cada dato con su nombre
+        movie[entry.name] = entry.value; 
     });
-    movie.href = item.href; // Agrega el enlace de Wikipedia
+    movie.href = item.href; 
     return movie;
 });
 
-// TODO crear la aplicación Vue
 const app = Vue.createApp({
     data() {
         return {
-            movies: formattedMovies,  // Lista de películas
-            selectedMovie: null        // Película seleccionada para edición
+            title: server_data.collection.title, 
+            movies: formattedMovies 
         };
-    },
-    methods: {
-        selectMovie(movie) {
-            this.selectedMovie = { ...movie }; // Copia de la película para editar
-        },
-        updateMovie() {
-            let index = this.movies.findIndex(m => m.name === this.selectedMovie.name);
-            if (index !== -1) {
-                this.movies[index] = { ...this.selectedMovie }; // Guardamos los cambios
-            }
-            this.selectedMovie = null; // Cerramos el formulario de edición
-        }
     }
 });
 
-// Componente edit-form
-app.component("movie-item", {
+app.component('item-data', {
     props: ["movie"],
     data() {
         return {
-            isEditing: false, // Controla si se muestra el formulario o la info de la película
-            tempMovie: {} // Objeto temporal para edición
+            isEditing: false,
+            tempMovie: { ...this.movie }
         };
     },
     methods: {
         editMovie() {
-            this.tempMovie = { ...this.movie }; // Crear una copia para edición
-            this.isEditing = true; // Mostrar formulario
+            this.tempMovie = { ...this.movie };
+            this.isEditing = true;
         },
-        closeAndSaveMovie() {
-            Object.assign(this.movie, this.tempMovie); // Guardar cambios en el objeto original
-            this.isEditing = false; // Cerrar formulario y mostrar la info de la película
+        saveMovie() {
+            Object.assign(this.movie, this.tempMovie);
+            this.isEditing = false;
         }
     },
     template: `
         <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
             <div class="card shadow-sm mb-4 w-100 movie-card">
                 <div class="card-body d-flex flex-column">
-
-                    <!-- mostrar la info de la peli si NO esta en modo edición -->
+                    
+                    <!-- Modo Visualización -->
                     <div v-if="!isEditing">
                         <h5 class="card-title fw-bold">{{ movie.name }}</h5>
 
@@ -108,14 +93,14 @@ app.component("movie-item", {
                         <p><strong>Release Date:</strong></p>
                         <p class="card-text">{{ movie.datePublished }}</p>
 
-                        <!-- Botones "Ver" y "Editar" alineados a la izquierda en una sola línea -->
+                        <!-- Botones alineados a la izquierda -->
                         <div class="mt-auto d-flex align-items-start gap-2">
                             <a :href="movie.href" target="_blank" class="btn btn-primary btn-sm">Ver</a>
                             <button @click="editMovie" class="btn btn-secondary btn-sm">Editar</button>
                         </div>
                     </div>
 
-                    <!-- mostrar el form si esta en modo edición -->
+                    <!-- Modo Edición -->
                     <div v-else class="edit-form">
                         <h5 class="fw-bold">Editar Película</h5>
 
@@ -131,66 +116,14 @@ app.component("movie-item", {
                         <label class="form-label mt-2">Fecha de Estreno:</label>
                         <input v-model="tempMovie.datePublished" type="date" class="form-control">
 
-                        <!-- botón cerrar -->
+                        <!-- Botón "Cerrar" que guarda los cambios -->
                         <div class="mt-3 d-flex align-items-start gap-2">
-                            <button @click="closeAndSaveMovie" class="btn btn-primary btn-sm">Cerrar</button>
+                            <button @click="saveMovie" class="btn btn-primary btn-sm">Cerrar</button>
                         </div>
                     </div>
 
                 </div>
             </div>
-        </div>
-    `
-});
-
-// Componente movie-list
-app.component("movie-list", {
-    props: ["movies"],
-    template: `
-        <div class="row">
-            <movie-item 
-                v-for="movie in movies" 
-                :key="movie.name" 
-                :movie="movie" 
-                @edit="$emit('edit', movie)">
-            </movie-item>
-        </div>
-    `
-});
-
-// Registrar los componentes globalmente
-app.component("edit-form", {
-    props: ["movie"],
-    template: `
-        <div v-if="movie" class="card p-3 mt-4">
-            <h4 class="fw-bold">Editar Película</h4>
-
-            <label class="form-label">Nombre:</label>
-            <input v-model="movie.name" type="text" class="form-control">
-
-            <label class="form-label mt-2">Descripción:</label>
-            <textarea v-model="movie.description" class="form-control"></textarea>
-
-            <label class="form-label mt-2">Director:</label>
-            <input v-model="movie.director" type="text" class="form-control">
-
-            <label class="form-label mt-2">Fecha de Estreno:</label>
-            <input v-model="movie.datePublished" type="date" class="form-control">
-
-            <button @click="$emit('update')" class="btn btn-success mt-3">Guardar</button>
-        </div>
-    `
-});
-
-app.component('item-data', {
-    props: ["item"],
-    template: `
-        <div>
-            <h3>{{ item.name }}</h3>
-            <p>{{ item.description }}</p>
-            <p><strong>Director:</strong> {{ item.director }}</p>
-            <p><strong>Release Date:</strong> {{ item.datePublished }}</p>
-            <a :href="item.href" target="_blank">More Info</a>
         </div>
     `
 });

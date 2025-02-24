@@ -34,17 +34,22 @@
   </style>
     <body class="bg-light">
         <div class="container mt-4">
-          <h1 id="autor" class="text-center fw-bold mb-4">Autor: GÉNESIS CONTRERAS</h1>
-          
-          <div id="app">
-              <div class="text-center mb-4">
-                  <h2 id="title" class="fw-bold">{{ movies.length > 0 ? movies[0].collectionTitle : "Lista de Películas" }}</h2>
-              </div>
-              
-              <movie-list :movies="movies"></movie-list>
-          </div>
-      </div>
-        <!-- Cargar archivo de script.js -->
+            <h1 id="autor" class="text-center fw-bold mb-4">Autor: GÉNESIS CONTRERAS</h1>
+        
+            <div id="app">
+                <div class="text-center mb-4">
+                    <h2 id="title" class="fw-bold">
+                        {{ title }}
+                    </h2>    
+                </div>
+    
+                <div class="row">
+                    <item-data v-for="movie in movies" :key="movie.name" :movie="movie"></item-data>
+                </div>
+    
+            </div>
+        </div>
+    
         <script src="js/script.js"></script>
     </body>
 </html>
